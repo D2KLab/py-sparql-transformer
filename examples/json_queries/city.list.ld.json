@@ -1,0 +1,15 @@
+{
+  "@context": "http://schema.org/",
+  "@graph": [{
+    "@type": "City",
+    "@id": "?id",
+    "name": "$rdfs:label$required$bestlang",
+    "image": "$foaf:depiction$required"
+  }],
+  "$where": [
+    "?id a dbo:City",
+    "?id dbo:country dbr:Italy"
+  ],
+  "$lang": "en;q=1, it;q=0.7 *;q=0.1",
+  "$limit": 10
+}

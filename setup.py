@@ -1,28 +1,29 @@
 from setuptools import setup, find_packages
 from typing import List
 from pathlib import Path
+from os import path
 
 
-def parse_requirements(filename: str) -> List[str]:
-    """Return requirements from requirements file."""
-    # Ref: https://stackoverflow.com/a/42033122/
-    requirements = (Path(__file__).parent / filename).read_text().strip().split('\n')
-    requirements = [r.strip() for r in requirements]
-    requirements = [r for r in sorted(requirements) if r and not r.startswith('#')]
-    return requirements
+with open('requirements.txt') as fp:
+    requirements = fp.read()
 
+# read the contents of your README file
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(name="SparqlTransformer",
       version="1.6.2",
-      packages=find_packages(),
-      scripts=['sparqlTransformer.py'],
-
-      install_requires=parse_requirements('requirements.txt'),
+      install_requires=requirements,
+      data_files=[('txt', ['requirements.txt'])],
+      py_modules=["SparqlTransformer"],
 
       # metadata to display on PyPI
       author="Pasquale Lisena",
       author_email="pasquale.lisena@eurecom.fr",
       description="Write your SPARQL query directly in the JSON-LD you would like to have in output",
+      long_description=long_description,
+      long_description_content_type='text/markdown',
       license="Apache 2.0",
       keywords="sparql json json-ld semantic",
       url="https://github.com/D2KLab/py-sparql-transformer",  # project home page, if any

@@ -17,12 +17,12 @@ Python version of [SPARQL Transformer for JavaScript](https://github.com/D2KLab/
 Install by pip.
 
 ```bash
-pip install sparqlTransformer
+pip install SPARQLTransformer
 ```
 Use in your JS application (node or browser).
 
 ```python
-from SparqlTransformer import sparqlTransformer
+from SPARQLTransformer import sparqlTransformer
 
 out = sparqlTransformer(query, options)
 ```

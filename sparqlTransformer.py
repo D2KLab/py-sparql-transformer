@@ -26,7 +26,6 @@ KEY_VOCABULARIES = {
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.WARNING)
 logger = logging.getLogger('sparql_transformer')
-# logger.setLevel(logging.WARNING)
 
 
 def sparqlTransformer(_input, options=None):
@@ -84,8 +83,8 @@ def sparqlTransformer(_input, options=None):
     return content
 
 
-# Read the input and extract the query and the prototype
 def _jsonld2query(_input):
+    """Read the input and extract the query and the prototype"""
     proto = _input['@graph'] if '@graph' in _input else _input['proto']
     if isinstance(proto, list):
         proto = proto[0]
@@ -164,10 +163,8 @@ def parseValues(values):
     return res
 
 
-#
-# Apply the prototype to a single line of query results
-#
 def _sparql2proto(line, proto, options):
+    """Apply the prototype to a single line of query results"""
     instance = copy.deepcopy(proto)
 
     fii_fun = _fit_in(instance, line, options)
@@ -176,11 +173,8 @@ def _sparql2proto(line, proto, options):
     return instance
 
 
-#
-#  Apply the result of SPARQL to a single
-#  property of the proto instance
-#
 def _fit_in(instance, line, options):
+    """Apply the result of SPARQL to a single property of the proto instance"""
     def fit(k):
         variable = instance[k]
 
@@ -251,10 +245,8 @@ known_types = {
 }
 
 
-#
-# Prepare the output managing languages and datatypes
-#
 def _to_jsonld_value(_input, options):
+    """Prepare the output managing languages and datatypes"""
     value = _input['value']
     if 'datatype' in _input:
         if _input['datatype'] == xsd('boolean'):
@@ -287,12 +279,9 @@ def _to_jsonld_value(_input, options):
     return value
 
 
-#
-# Merge base and addition, by defining/adding in an
-# array the values in addition to the base object.
-# @return the base object merged.
-#
 def _merge_obj(base, addition, options):
+    """Merge base and addition, by defining/adding in an array the values in addition to the base object.
+    Return the base object merged."""
     for k in list(addition):
         a = addition[k]
 
@@ -348,17 +337,13 @@ def _compute_root_id(proto, prefix):
     return _rootId, required
 
 
-# 
-# Add the "?" if absent
-# 
 def _sparql_var(_input):
+    """Add the "?" if absent"""
     return _input if _input.startswith('?') else '?' + _input
 
 
-#
-# Parse a single key in prototype
-#
 def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, prefix="v", prev_root=None):
+    """Parse a single key in prototype"""
     _rootId, _blockRequired = _compute_root_id(proto, prefix)
     if not _rootId:
         _rootId = prev_root

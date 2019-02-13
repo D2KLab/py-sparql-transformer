@@ -56,3 +56,9 @@ https://doi.org/10.1145/3184558.3188739
 ---
 
 <b id="f1">1</b>: Using [virtuoso-sparql-client](https://github.com/crs4/virtuoso-sparql-client).
+
+<!--
+python setup.py sdist
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+twine upload dist/*
+-->

@@ -124,7 +124,7 @@ def _jsonld2query(_input):
     offset = 'OFFSET ' + modifiers['$offset'] if '$offset' in modifiers else ''
     distinct = '' if ('$distinct' in modifiers and modifiers['$distinct'] == 'false') else 'DISTINCT'
     prefixes = _parse_prefixes(modifiers['$prefixes']) if '$prefixes' in modifiers else []
-    values = parseValues(modifiers['$values']) if '$values' in modifiers else []
+    values = parse_values(modifiers['$values']) if '$values' in modifiers else []
     orderby = 'ORDER BY ' + ' '.join(_as_array(modifiers['$orderby'])) if '$orderby' in modifiers else ''
     groupby = 'GROUP BY ' + ' '.join(_as_array(modifiers['$groupby'])) if '$groupby' in modifiers else ''
     having = 'HAVING(%s)' % ' && '.join(_as_array(modifiers['$having'])) if '$having' in modifiers else ''
@@ -160,21 +160,21 @@ def _default_sparql(endpoint):
 
 
 def _parse_prefixes(prefixes):
-    return list(map(lambda p, v: 'PREFIX %s: <%s>' % (p, v), list(prefixes.items())))
+    return list(map(lambda key: 'PREFIX %s: <%s>' % (key, prefixes[key]), prefixes.keys()))
 
 
-def parseValues(values):
+def parse_values(values):
     res = []
     for p in list(values):
         __v = []
         for v in _as_array(values[p]):
-            if v.startsWith('http'):
+            if v.startswith('http'):
                 __v.append('<%s>' % v)
-            elif v.includes(':'):
+            elif ':' in v:
                 __v.append(v)
             else:
                 __v.append('"%s"' % v)
-        res.append('VALUES %s {%s}' % (_sparql_var(p), __v.join(' ')))
+        res.append('VALUES %s {%s}' % (_sparql_var(p), ' '.join(__v)))
     return res
 
 
@@ -333,7 +333,7 @@ def _compute_root_id(proto, prefix):
             k = key
 
     if k is None:
-        return
+        return None, None
 
     k = KEY_VOCABULARIES[k]['id']
     txt = proto[k]

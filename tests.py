@@ -2,7 +2,7 @@ import unittest
 import json
 from simplejson import dumps
 import os
-from main import sparqlTransformer
+from SPARQLTransformer import sparqlTransformer
 
 OUTPUT = "./examples/json_transformed/"
 JSONLD_QUERIES = "./examples/json_queries/"

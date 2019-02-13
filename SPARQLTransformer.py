@@ -28,7 +28,7 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.WARNING)
 logger = logging.getLogger('sparql_transformer')
 
 
-def sparqlTransformer(_input, options=None):
+def pre_process(_input, options=None):
     opt = DEFAULT_OPTIONS.copy()
     if '@context' in _input:
         opt['context'] = _input['@context']
@@ -56,10 +56,14 @@ def sparqlTransformer(_input, options=None):
     is_json_ld = '@graph' in _input
     voc = KEY_VOCABULARIES['JSONLD' if is_json_ld else 'PROTO']
     opt['voc'] = voc
+    opt['is_json_ld'] = is_json_ld
 
-    sparql_fun = opt['sparqlFunction'] if 'sparqlFunction' in opt else _default_sparql(opt['endpoint'])
-    sparql_res = sparql_fun(query)
-    logger.debug(sparql_res)
+    return query, proto, opt
+
+
+def post_process(sparql_res, proto, opt):
+    voc = opt['voc']
+    is_json_ld = opt['is_json_ld']
 
     bindings = sparql_res['results']['bindings']
     # apply the proto
@@ -81,6 +85,17 @@ def sparqlTransformer(_input, options=None):
             '@graph': content
         }
     return content
+
+
+def sparqlTransformer(_input, options=None):
+    query, proto, opt = pre_process(_input, options)
+
+    sparql_fun = opt['sparqlFunction'] if 'sparqlFunction' in opt else _default_sparql(opt['endpoint'])
+    sparql_res = sparql_fun(query)
+
+    logger.debug(sparql_res)
+
+    return post_process(sparql_res, proto, opt)
 
 
 def _jsonld2query(_input):
@@ -159,7 +174,7 @@ def parseValues(values):
                 __v.append(v)
             else:
                 __v.append('"%s"' % v)
-        res.append('VALUES %s {%s}' % (_sparql_var(p), _v.join(' ')))
+        res.append('VALUES %s {%s}' % (_sparql_var(p), __v.join(' ')))
     return res
 
 
@@ -175,6 +190,7 @@ def _sparql2proto(line, proto, options):
 
 def _fit_in(instance, line, options):
     """Apply the result of SPARQL to a single property of the proto instance"""
+
     def fit(k):
         variable = instance[k]
 

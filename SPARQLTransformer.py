@@ -118,7 +118,7 @@ def _jsonld2query(_input):
     wheres = _as_array(modifiers.get('$where'))
     main_lang = modifiers.get('$lang')
 
-    mpk_fun, _temp = _manage_proto_key(proto, _vars, filters, wheres, main_lang)
+    mpk_fun, _temp = _manage_proto_key(proto, _vars, filters, wheres, main_lang, values=modifiers.get('$values', []))
     for i, key in enumerate(list(proto)):
         mpk_fun(key, i)
 
@@ -360,7 +360,7 @@ def _sparql_var(_input):
     return _input if _input.startswith('?') else '?' + _input
 
 
-def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, prefix="v", prev_root=None):
+def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, prefix="v", prev_root=None, values=[]):
     """Parse a single key in prototype"""
     _rootId, _blockRequired = _compute_root_id(proto, prefix)
     if not _rootId:
@@ -372,7 +372,8 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
         v = proto[k]
         if isinstance(v, dict):
             wheres_internal = []
-            mpk_fun, bk_req = _manage_proto_key(v, vars, filters, wheres_internal, main_lang, prefix + str(i), _rootId)
+            mpk_fun, bk_req = _manage_proto_key(v, vars, filters, wheres_internal,
+                                                main_lang, prefix + str(i), _rootId, values)
 
             for i, k in enumerate(list(v)):
                 mpk_fun(k, i)
@@ -392,7 +393,8 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
             options = v.split('$')
             v = options.pop(0)
 
-        required = 'required' in options or k in ['id', '@id']
+        required = 'required' in options or k in ['id', '@id'] or k in values
+        # if it is an id or I specified a value, this property can not be optional
 
         id = ('?' + prefix + str(i)) if is_dollar else v
         _var = [s for s in options if s.startswith('var:')]

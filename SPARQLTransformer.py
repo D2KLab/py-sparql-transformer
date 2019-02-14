@@ -50,6 +50,8 @@ def pre_process(_input, options=None):
             return logger.error('Wrong input. I require a path to a JSON file')
     elif not isinstance(_input, dict):
         return logger.error('Input format not valid')
+    else:
+        _input = copy.deepcopy(_input)
 
     proto, query = _jsonld2query(_input)
 

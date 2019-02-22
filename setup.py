@@ -11,7 +11,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name="SPARQLTransformer",
-      version="1.6.7",
+      version="1.6.8",
       install_requires=requirements,
       data_files=[('txt', ['requirements.txt'])],
       py_modules=["SPARQLTransformer"],

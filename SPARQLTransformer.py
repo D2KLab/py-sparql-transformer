@@ -408,7 +408,7 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
 
         _var = id
         if 'sample' in options:
-            _var = 'SAMPLE(%s) AS %s' % (id, id)
+            _var = '(SAMPLE(%s) AS %s)' % (id, id)
 
         if len(_bestlang) > 0:
             _bestlang = _bestlang[0]
@@ -417,7 +417,7 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
             if lng is None:
                 raise AttributeError('bestlang require a language declared inline or in the root')
 
-            _var = 'sql:BEST_LANGMATCH(%s, "%s", "en") AS %s' % (id, lng, id)
+            _var = '(sql:BEST_LANGMATCH(%s, "%s", "en") AS %s)' % (id, lng, id)
 
         vars.append(_var)
 

@@ -35,7 +35,7 @@ def pre_process(_input, options=None):
     if options is not None:
         opt.update(options)
 
-    if 'debug' in opt:
+    if 'debug' in opt and opt['debug']:
         logger.setLevel(logging.DEBUG)
 
     logger.debug('OPTIONS:')

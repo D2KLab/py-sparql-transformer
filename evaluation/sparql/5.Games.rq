@@ -1,0 +1,6 @@
+# Games
+
+SELECT ?game ?title WHERE {
+     ?game a dbo:Game  .
+     ?game foaf:name ?title .
+} ORDER by ?title

@@ -1,0 +1,8 @@
+{
+  "proto": {
+    "id": "?game",
+    "title": "$foaf:name$required$var:title"
+  },
+  "$where": "?game a dbo:Game",
+  "$orderby": "?title"
+}

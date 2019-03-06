@@ -1,0 +1,12 @@
+{
+  "proto": {
+    "id": "?person",
+    "birth": "$dbo:birthDate$required$var:birth",
+    "name": "$foaf:name$required$var:name",
+    "death": "$dbo:deathDate$required"
+  },
+  "$filter": "?birth < '1900-01-01'^^xsd:date",
+  "$where": "?person dbo:birthPlace dbr:Berlin",
+  "$orderby": "?name"
+}
+

@@ -1,0 +1,17 @@
+# German musicians with German and English descriptions
+
+SELECT ?name ?description_en ?description_de ?musician
+WHERE {
+   ?musician a dbo:MusicalArtist .
+   ?musician dbo:birthPlace dbr:Germany .
+
+   ?musician foaf:name ?name .
+   OPTIONAL {
+        ?musician rdfs:comment ?description_en .
+        FILTER (LANG(?description_en) = 'en') .
+   }
+   OPTIONAL {
+        ?musician rdfs:comment ?description_de .
+        FILTER (LANG(?description_de) = 'de') .
+   }
+}

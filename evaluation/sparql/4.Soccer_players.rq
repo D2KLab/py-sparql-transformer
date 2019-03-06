@@ -1,0 +1,19 @@
+# soccer players, who are born in a country with more than 10 million inhabitants,
+# who played as goalkeeper for a club that has a stadium with more than 30.000 seats
+# and the club country is different from the birth country
+
+SELECT distinct ?soccerplayer ?countryOfBirth ?team ?countryOfTeam ?stadiumcapacity
+WHERE {
+?soccerplayer a dbo:SoccerPlayer ;
+   dbo:position|dbp:position <http://dbpedia.org/resource/Goalkeeper_(association_football)> ;
+   dbo:birthPlace/dbo:country* ?countryOfBirth ;
+   #dbo:number 13 ;
+   dbo:team ?team .
+   ?team dbo:capacity ?stadiumcapacity ; dbo:ground ?countryOfTeam .
+   ?countryOfBirth a dbo:Country ; dbo:populationTotal ?population .
+   ?countryOfTeam a dbo:Country .
+
+   FILTER (?countryOfTeam != ?countryOfBirth)
+   FILTER (?stadiumcapacity > 30000)
+   FILTER (?population > 10000000)
+} ORDER BY ?soccerplayer

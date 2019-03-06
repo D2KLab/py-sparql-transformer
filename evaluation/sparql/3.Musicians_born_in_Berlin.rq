@@ -1,0 +1,10 @@
+# Musicians who were born in Berlin
+
+SELECT ?name ?birth ?description ?person WHERE {
+      ?person a dbo:MusicalArtist .
+      ?person dbo:birthPlace dbr:Berlin .
+      ?person dbo:birthDate ?birth .
+      ?person foaf:name ?name .
+      ?person rdfs:comment ?description .
+      FILTER (LANG(?description) = 'en') .
+} ORDER BY ?name

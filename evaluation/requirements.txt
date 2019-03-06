@@ -1,0 +1,4 @@
+SPARQLWrapper
+SPARQLTransformer==1.6.10
+numpy
+pandas

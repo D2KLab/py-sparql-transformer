@@ -1,0 +1,9 @@
+# People who were born in Berlin before 1900
+
+SELECT ?name ?birth ?death ?person WHERE {
+  ?person dbo:birthPlace dbr:Berlin .
+  ?person dbo:birthDate ?birth .
+  ?person foaf:name ?name .
+  ?person dbo:deathDate ?death .
+  FILTER (?birth < "1900-01-01"^^xsd:date) .
+} ORDER BY ?name

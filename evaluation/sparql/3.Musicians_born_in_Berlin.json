@@ -1,0 +1,13 @@
+{
+  "proto": {
+    "id": "?musician",
+    "name": "$foaf:name$required$var:name",
+    "birth": "$dbo:birthDate$required$var:birth",
+    "description": "$rdfs:comment$required$lang:en"
+  },
+  "$where": [
+    "?musician a dbo:MusicalArtist",
+    "?musician dbo:birthPlace dbr:Berlin"
+  ],
+  "$orderby": "?name"
+}

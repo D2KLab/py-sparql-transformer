@@ -1,0 +1,26 @@
+{
+  "proto": {
+    "id": "?soccerplayer",
+    "country": {
+      "id": "$dbo:birthPlace/dbo:country*$required$var:countryOfBirth",
+      "population": "$dbo:populationTotal$required$var:population"
+    },
+    "team": {
+      "id": "$dbo:team$required",
+      "stadiumcapacity": "$dbo:capacity$required$var:stadiumcapacity",
+      "country": "$dbo:ground$required$var:countryOfTeam"
+    }
+  },
+  "$filter": [
+    "?countryOfTeam != ?countryOfBirth",
+    "?stadiumcapacity > 30000",
+    "?population > 10000000"
+  ],
+  "$where": [
+    "?soccerplayer a dbo:SoccerPlayer",
+    "?soccerplayer dbo:position|dbp:position <http://dbpedia.org/resource/Goalkeeper_(association_football)>",
+    "?countryOfBirth a dbo:Country",
+    "?countryOfTeam a dbo:Country"
+  ],
+  "$orderby": "?soccerplayer"
+}

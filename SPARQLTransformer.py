@@ -37,6 +37,8 @@ def pre_process(_input, options=None):
 
     if 'debug' in opt and opt['debug']:
         logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.NOTSET)
 
     logger.debug('OPTIONS:')
     if logger.getEffectiveLevel() == logging.DEBUG:
@@ -421,14 +423,17 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
 
         vars.append(_var)
 
+        # lang filters are managed here, so that they stay within the OPTIONAL
+        lang_filter = ''
         _lang = [s for s in options if s.startswith('lang:')]
         if len(_lang) > 0:
             _lang = _lang[0]
-            filters.append("lang(%s) = '%s'" % (id, _lang.split(':')[1]))
+            lang_filter = ".\nFILTER(lang(%s) = '%s')" % (id, _lang.split(':')[1])
 
         if is_dollar:
             subject = prev_root if ('prevRoot' in options and prev_root is not None) else _rootId
             q = ' '.join([subject, v, id])
+            q += lang_filter
             wheres.append(q if required else 'OPTIONAL { %s }' % q)
 
     return inner, _blockRequired

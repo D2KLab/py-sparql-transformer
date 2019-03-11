@@ -207,6 +207,9 @@ def _fit_in(instance, line, options):
                 instance.pop(k)
             return
 
+        if not isinstance(variable, str):
+            return
+
         if not variable.startswith('?'):
             return
 
@@ -382,6 +385,9 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
 
             wheres_internal = '.\n'.join(wheres_internal)
             wheres.append(wheres_internal if bk_req else 'OPTIONAL { %s }' % wheres_internal)
+            return
+
+        if not isinstance(v, str):
             return
 
         is_dollar = v.startswith('$')

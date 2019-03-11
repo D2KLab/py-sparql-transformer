@@ -17,5 +17,6 @@
     "?id a dbo:City",
     "?id dbo:country dbr:Italy"
   ],
+  "$orderby": "?id",
   "$limit": 100
 }

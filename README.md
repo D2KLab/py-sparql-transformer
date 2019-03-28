@@ -2,7 +2,8 @@ Py SPARQL Transformer
 =====================
 
 Write your SPARQL query directly in the JSON-LD you would like to have in output.
-Python version of [SPARQL Transformer for JavaScript](https://github.com/D2KLab/sparql-transformer).
+
+Looking for the [JavaScript Version](https://github.com/D2KLab/sparql-transformer)?
 
 **Table of Contents**
 
@@ -27,9 +28,9 @@ from SPARQLTransformer import sparqlTransformer
 out = sparqlTransformer(query, options)
 ```
 
-The first parameter (`query`) is the query in the JSON-LD format. The JSON-LD can be:
-- an already parsed JS object (or defined real time),
-- **ONLY if running in NodeJS**, the local path of a JSON file (that will then be read and parsed).
+The first parameter (`query`) is the query in the JSON format. The JSON can be:
+- an already parsed (or defined real time) `dict`,
+- the local path of a JSON file (that will then be read and parsed).
 
 The `options` parameter is optional, and can define the following:
 
@@ -41,7 +42,7 @@ The `options` parameter is optional, and can define the following:
 | debug | `False` | Enter in debug mode. This allow to print in console the generated SPARQL query. |
 
 
-See [`test.js`](./test.js) for further examples.
+See [`tests.py`](./test.py) for further examples.
 
 
 ## Credits
@@ -54,8 +55,6 @@ https://doi.org/10.1145/3184558.3188739
 [BIB file](https://github.com/D2KLab/sparql-transformer/blob/master/lisena2018sparqltransformer.bib)
 
 ---
-
-<b id="f1">1</b>: Using [virtuoso-sparql-client](https://github.com/crs4/virtuoso-sparql-client).
 
 <!--
 python setup.py sdist

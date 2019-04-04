@@ -54,7 +54,6 @@ https://doi.org/10.1145/3184558.3188739
 
 [BIB file](https://github.com/D2KLab/sparql-transformer/blob/master/lisena2018sparqltransformer.bib)
 
----
 
 <!--
 python setup.py sdist

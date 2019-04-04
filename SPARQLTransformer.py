@@ -124,6 +124,9 @@ def _jsonld2query(_input):
     for i, key in enumerate(list(proto)):
         mpk_fun(key, i)
 
+    wheres = [w.trim() for w in wheres]
+    wheres = [w for w in wheres if w]
+
     limit = ('LIMIT %d' % modifiers['$limit']) if '$limit' in modifiers else ''
     offset = 'OFFSET ' + modifiers['$offset'] if '$offset' in modifiers else ''
     distinct = '' if ('$distinct' in modifiers and modifiers['$distinct'] == 'false') else 'DISTINCT'

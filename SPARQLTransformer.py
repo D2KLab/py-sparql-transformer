@@ -124,7 +124,7 @@ def _jsonld2query(_input):
     for i, key in enumerate(list(proto)):
         mpk_fun(key, i)
 
-    wheres = [w.trim() for w in wheres]
+    wheres = [w.strip() for w in wheres]
     wheres = [w for w in wheres if w]
 
     limit = ('LIMIT %d' % modifiers['$limit']) if '$limit' in modifiers else ''

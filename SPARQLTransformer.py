@@ -317,7 +317,14 @@ def _merge_obj(base, addition, options):
 
         b = base[k]
 
+        _id = options['voc']['id']
+
         if isinstance(b, list):
+            if _id in a:
+                same_ids = [x for x in b if _id in x and a[_id] == x[_id]]
+                if len(same_ids) > 0:
+                    _merge_obj(same_ids[0], a, options)
+                    continue
 
             if not any([_deepequals(x, a) for x in b]):
                 b.append(a)
@@ -325,8 +332,6 @@ def _merge_obj(base, addition, options):
 
         if _deepequals(a, b):
             continue
-
-        _id = options['voc']['id']
 
         if _id in a and _id in b and a[_id] == b[_id]:  # same ids
             _merge_obj(b, a, options)

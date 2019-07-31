@@ -7,14 +7,16 @@ from SPARQLTransformer import sparqlTransformer
 OUTPUT = "./examples/json_transformed/"
 JSONLD_QUERIES = "./examples/json_queries/"
 
+opt = {
+    'debug': False
+}
+
 
 class TestStringMethods(unittest.TestCase):
 
     def test_proto(self):
         q, expected = load('city.list.json')
-        out = sparqlTransformer(q, {
-            'debug': True
-        })
+        out = sparqlTransformer(q, opt)
         # with open('a.json', 'w') as o:
         #     json.dump(out, o)
 
@@ -22,9 +24,7 @@ class TestStringMethods(unittest.TestCase):
 
     def test_jsonld(self):
         q, expected = load('city.list.ld.json')
-        out = sparqlTransformer(q, {
-            'debug': True
-        })
+        out = sparqlTransformer(q, opt)
         # with open('a.json', 'w') as o:
         #     json.dump(out, o)
 
@@ -32,9 +32,15 @@ class TestStringMethods(unittest.TestCase):
 
     def test_nested(self):
         q, expected = load('city.region.list.ld.json')
-        out = sparqlTransformer(q, {
-            'debug': True
-        })
+        out = sparqlTransformer(q, opt)
+        # with open('a.json', 'w') as o:
+        #     json.dump(out, o)
+
+        self.assertEqual(dumps(out), dumps(expected))
+
+    def test_anchor(self):
+        q, expected = load('band.json')
+        out = sparqlTransformer(q, opt)
         # with open('a.json', 'w') as o:
         #     json.dump(out, o)
 

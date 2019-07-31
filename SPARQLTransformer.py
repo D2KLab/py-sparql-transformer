@@ -66,7 +66,6 @@ def pre_process(_input, options=None):
 
 
 def post_process(sparql_res, proto, opt):
-    voc = opt['voc']
     is_json_ld = opt['is_json_ld']
 
     bindings = sparql_res['results']['bindings']
@@ -74,14 +73,19 @@ def post_process(sparql_res, proto, opt):
     instances = list(map(lambda b: _sparql2proto(b, proto, opt), bindings))
     # merge lines with the same id
     content = []
+    anchor = instances[0]['$anchor']
     for inst in instances:
-        _id = inst[voc['id']]
+        _id = inst[anchor]
         # search if we have already the same id
-        match = [x for x in content if x[voc['id']] == _id]
+        match = [x for x in content if x[anchor] == _id]
         if not match:  # it is a new one
             content.append(inst)
         else:  # otherwise modify previous one
-            _merge_obj(match[0], inst, opt)
+            _merge_obj(match[0], inst)
+
+    # remove anchor tag
+    for i in content:
+        clean_recursively(i)
 
     if is_json_ld:
         return {
@@ -241,7 +245,7 @@ def _fit_in(instance, line, options):
 
 def _is_empty_obj(target):
     for key in list(target):
-        if key != '@type':
+        if key not in ['@type', '$anchor']:
             return False
     return True
 
@@ -305,25 +309,29 @@ def _to_jsonld_value(_input, options):
     return value
 
 
-def _merge_obj(base, addition, options):
+def _merge_obj(base, addition):
     """Merge base and addition, by defining/adding in an array the values in addition to the base object.
     Return the base object merged."""
     for k in list(addition):
-        a = addition[k]
+        if k == '$anchor':
+            continue
 
+        a = addition[k]
         if k not in base:
             base[k] = a
             continue
 
         b = base[k]
 
-        _id = options['voc']['id']
+        anchor = None
+        if isinstance(a, dict) and '$anchor' in a:
+            anchor = a['$anchor']
 
         if isinstance(b, list):
-            if _id in a:
-                same_ids = [x for x in b if _id in x and a[_id] == x[_id]]
+            if anchor:
+                same_ids = [x for x in b if anchor in x and a[anchor] == x[anchor]]
                 if len(same_ids) > 0:
-                    _merge_obj(same_ids[0], a, options)
+                    _merge_obj(same_ids[0], a)
                     continue
 
             if not any([_deepequals(x, a) for x in b]):
@@ -333,8 +341,8 @@ def _merge_obj(base, addition, options):
         if _deepequals(a, b):
             continue
 
-        if _id in a and _id in b and a[_id] == b[_id]:  # same ids
-            _merge_obj(b, a, options)
+        if anchor and anchor in b and a[anchor] == b[anchor]:  # same ids
+            _merge_obj(b, a)
         else:
             base[k] = [b, a]
 
@@ -343,14 +351,23 @@ def _merge_obj(base, addition, options):
 
 def _compute_root_id(proto, prefix):
     k = None
-    for key, value in KEY_VOCABULARIES.items():
-        if KEY_VOCABULARIES[key]['id'] in proto:
+
+    # check if an anchor is set
+    for key, value in proto.items():
+        if type(value) == str and '$anchor' in value:
             k = key
+            break
+
+    # otherwise, check if one of the default anchors is there
+    if k is None:
+        for key, value in KEY_VOCABULARIES.items():
+            if KEY_VOCABULARIES[key]['id'] in proto:
+                k = KEY_VOCABULARIES[key]['id']
+                break
 
     if k is None:
         return None, None
 
-    k = KEY_VOCABULARIES[k]['id']
     txt = proto[k]
     modifiers = txt.split('$')
     _rootId = modifiers.pop(0)
@@ -364,7 +381,7 @@ def _compute_root_id(proto, prefix):
         _rootId = "?" + prefix + "r"
         proto[k] += '$var:' + _rootId
 
-    proto[k] += '$prevRoot'
+    proto['$anchor'] = k
     return _rootId, required
 
 
@@ -376,12 +393,11 @@ def _sparql_var(_input):
 def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, prefix="v", prev_root=None, values=[]):
     """Parse a single key in prototype"""
     _rootId, _blockRequired = _compute_root_id(proto, prefix)
-    if not _rootId:
-        _rootId = prev_root
-    if not _rootId:
-        _rootId = '?id'
+    _rootId = _rootId or prev_root or '?id'
 
     def inner(k, i=''):
+        if [k] == '$anchor':
+            return
         v = proto[k]
         if isinstance(v, dict):
             wheres_internal = []
@@ -462,6 +478,19 @@ def _prepare_groupby(array=None):
             s.pop('desc')
 
     return _prepare_orderby(array, 'GROUP BY')
+
+
+# Remove development properties
+def clean_recursively(instance):
+    if isinstance(instance, list):
+        for i in instance:
+            clean_recursively(i)
+        return
+
+    if isinstance(instance, dict):
+        instance.pop('$anchor', None)  # remove $anchor
+        for k, v in instance.items():
+            clean_recursively(v)
 
 
 def _prepare_orderby(array=None, keyword='ORDER BY'):

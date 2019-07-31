@@ -3,11 +3,16 @@ Py SPARQL Transformer
 
 Write your SPARQL query directly in the JSON-LD you would like to have in output.
 
-Looking for the [JavaScript Version](https://github.com/D2KLab/sparql-transformer)?
+> Looking for the [JavaScript Version](https://github.com/D2KLab/sparql-transformer)?
+
+
+## News
+
+- It is now possible to set a different **merging anchor** instead of `id`/`@id` using the `$anchor` modifier.
 
 **Table of Contents**
 
-- [Motivation](https://github.com/D2KLab/sparql-transformer#motivation)
+- [Motivation](https://github.com/D2KLab/sparql-transformer/blob/master/motivation.md)
 - [Query in JSON](https://github.com/D2KLab/sparql-transformer#query-in-json)
 - [How to use](#how-to-use)
 - [Credits](#credits)
@@ -48,6 +53,11 @@ See [`tests.py`](./test.py) for further examples.
 ## Credits
 
 If you use this module for your research work, please cite:
+
+> Pasquale Lisena, Albert Meroño-Peñuela, Tobias Kuhn and Raphaël Troncy. Easy Web API Development with SPARQL Transformer. In 18th International Semantic Web Conference (ISWC), Auckland, New Zealand, October 26-30, 2019.
+
+[BIB file](./bib/lisena2019easyweb.bib)
+
 
 > Pasquale Lisena and Raphaël Troncy. Transforming the JSON Output of SPARQL Queries for Linked Data Clients. In WWW'18 Companion: The 2018 Web Conference Companion, April 23–27, 2018, Lyon, France.
 <https://doi.org/10.1145/3184558.3188739>

@@ -8,7 +8,8 @@ from simplejson import dumps
 
 DEFAULT_OPTIONS = {
     'context': 'http://schema.org/',
-    'endpoint': 'http://dbpedia.org/sparql'
+    'endpoint': 'http://dbpedia.org/sparql',
+    'langTag': 'show'
 }
 
 KEY_VOCABULARIES = {
@@ -54,6 +55,10 @@ def pre_process(_input, options=None):
         return logger.error('Input format not valid')
     else:
         _input = copy.deepcopy(_input)
+
+    #   I save the info about hideLang before it is destroyed
+    if '$langTag' in _input:
+        opt['langTag'] = _input['$langTag']
 
     proto, query = _jsonld2query(_input)
 
@@ -222,10 +227,15 @@ def _fit_in(instance, line, options):
 
         variable = variable[1:]
         accept = None
+        langTag = options['langTag']
         if "$accept:" in variable:
             temp = variable.split('$accept:')
             variable = temp[0]
             accept = temp[1]
+        if "$langTag:" in variable:
+            temp = variable.split('$langTag:')
+            variable = temp[0]
+            langTag = temp[1]
 
         # variable not in result, delete from
         if variable not in line:
@@ -233,6 +243,7 @@ def _fit_in(instance, line, options):
         else:
             opt = options.copy()
             opt['accept'] = accept
+            opt['langTag'] = langTag
             instance[k] = _to_jsonld_value(line[variable], opt)
 
             if instance[k] is None:
@@ -297,7 +308,7 @@ def _to_jsonld_value(_input, options):
         return value
 
     # if here, it is a string or a date, that are not parsed
-    if 'xml:lang' in _input:
+    if 'xml:lang' in _input and options['langTag'] != 'hide':
         lang = _input['xml:lang']
 
         voc = options['voc']
@@ -437,6 +448,7 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
 
         proto[k] = id
         _bestlang = [s for s in options if s.startswith('bestlang')]
+        _langTag = [s for s in options if s.startswith('langTag')]
 
         _var = id
         if 'sample' in options:
@@ -450,6 +462,9 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
                 raise AttributeError('bestlang require a language declared inline or in the root')
 
             _var = '(sql:BEST_LANGMATCH(%s, "%s", "en") AS %s)' % (id, lng, id)
+
+        if len(_langTag) > 0:
+            proto[k] = proto[k] + '$' + _langTag[0]
 
         vars.append(_var)
 

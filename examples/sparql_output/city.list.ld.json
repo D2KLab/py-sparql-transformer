@@ -1,1 +1,31 @@
-{"head": {"link": [], "vars": ["id", "v2", "v3"]}, "results": {"distinct": false, "ordered": true, "bindings": [{"id": {"type": "uri", "value": "http://dbpedia.org/resource/Acireale"}, "v2": {"type": "literal", "xml:lang": "en", "value": "Acireale"}, "v3": {"type": "uri", "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Acireale,_piazza_del_duomo.JPG"}}, {"id": {"type": "uri", "value": "http://dbpedia.org/resource/Acquapendente"}, "v2": {"type": "literal", "xml:lang": "en", "value": "Acquapendente"}, "v3": {"type": "uri", "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Acquapendente.jpg"}}, {"id": {"type": "uri", "value": "http://dbpedia.org/resource/Acqui_Terme"}, "v2": {"type": "literal", "xml:lang": "en", "value": "Acqui Terme"}, "v3": {"type": "uri", "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Acqui_Terme_\u2013_La_Bollente.jpg"}}, {"id": {"type": "uri", "value": "http://dbpedia.org/resource/Afragola"}, "v2": {"type": "literal", "xml:lang": "en", "value": "Afragola"}, "v3": {"type": "uri", "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Municipio_Afragola.jpg"}}, {"id": {"type": "uri", "value": "http://dbpedia.org/resource/Agrigento"}, "v2": {"type": "literal", "xml:lang": "en", "value": "Agrigento"}, "v3": {"type": "uri", "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Historic_centre_of_Agrigento_seen_from_the_Valle_dei_Templi_-_Italy_2015_(2).JPG"}}, {"id": {"type": "uri", "value": "http://dbpedia.org/resource/Albenga"}, "v2": {"type": "literal", "xml:lang": "en", "value": "Albenga"}, "v3": {"type": "uri", "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Albenga.JPG"}}, {"id": {"type": "uri", "value": "http://dbpedia.org/resource/Alessandria"}, "v2": {"type": "literal", "xml:lang": "en", "value": "Alessandria"}, "v3": {"type": "uri", "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Alessandria_piazzaduomo.jpg"}}, {"id": {"type": "uri", "value": "http://dbpedia.org/resource/Altamura"}, "v2": {"type": "literal", "xml:lang": "en", "value": "Altamura"}, "v3": {"type": "uri", "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Puglia_Altamura1_tango7174.jpg"}}, {"id": {"type": "uri", "value": "http://dbpedia.org/resource/Ancona"}, "v2": {"type": "literal", "xml:lang": "en", "value": "Ancona"}, "v3": {"type": "uri", "value": "http://commons.wikimedia.org/wiki/Special:FilePath/AnkonPanorama.jpg"}}, {"id": {"type": "uri", "value": "http://dbpedia.org/resource/Andria"}, "v2": {"type": "literal", "xml:lang": "en", "value": "Andria"}, "v3": {"type": "uri", "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Castel_del_Monte_Mai08.jpg"}}]}}
+{
+  "head": {
+    "link": [],
+    "vars": [
+      "id",
+      "v2",
+      "v3"
+    ]
+  },
+  "results": {
+    "distinct": false,
+    "ordered": true,
+    "bindings": [
+      {
+        "id": {
+          "type": "uri",
+          "value": "http://dbpedia.org/resource/Bologna"
+        },
+        "v2": {
+          "type": "literal",
+          "xml:lang": "it",
+          "value": "Bologna"
+        },
+        "v3": {
+          "type": "uri",
+          "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Bologna_postcard.jpg"
+        }
+      }
+    ]
+  }
+}

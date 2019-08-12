@@ -3,93 +3,9 @@
   "@graph": [
     {
       "@type": "City",
-      "@id": "http://dbpedia.org/resource/Acireale",
-      "name": {
-        "@language": "en",
-        "@value": "Acireale"
-      },
-      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/Acireale,_piazza_del_duomo.JPG"
-    },
-    {
-      "@type": "City",
-      "@id": "http://dbpedia.org/resource/Acquapendente",
-      "name": {
-        "@language": "en",
-        "@value": "Acquapendente"
-      },
-      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/Acquapendente.jpg"
-    },
-    {
-      "@type": "City",
-      "@id": "http://dbpedia.org/resource/Acqui_Terme",
-      "name": {
-        "@language": "en",
-        "@value": "Acqui Terme"
-      },
-      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/Acqui_Terme_\u2013_La_Bollente.jpg"
-    },
-    {
-      "@type": "City",
-      "@id": "http://dbpedia.org/resource/Afragola",
-      "name": {
-        "@language": "en",
-        "@value": "Afragola"
-      },
-      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/Municipio_Afragola.jpg"
-    },
-    {
-      "@type": "City",
-      "@id": "http://dbpedia.org/resource/Agrigento",
-      "name": {
-        "@language": "en",
-        "@value": "Agrigento"
-      },
-      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/Historic_centre_of_Agrigento_seen_from_the_Valle_dei_Templi_-_Italy_2015_(2).JPG"
-    },
-    {
-      "@type": "City",
-      "@id": "http://dbpedia.org/resource/Albenga",
-      "name": {
-        "@language": "en",
-        "@value": "Albenga"
-      },
-      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/Albenga.JPG"
-    },
-    {
-      "@type": "City",
-      "@id": "http://dbpedia.org/resource/Alessandria",
-      "name": {
-        "@language": "en",
-        "@value": "Alessandria"
-      },
-      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/Alessandria_piazzaduomo.jpg"
-    },
-    {
-      "@type": "City",
-      "@id": "http://dbpedia.org/resource/Altamura",
-      "name": {
-        "@language": "en",
-        "@value": "Altamura"
-      },
-      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/Puglia_Altamura1_tango7174.jpg"
-    },
-    {
-      "@type": "City",
-      "@id": "http://dbpedia.org/resource/Ancona",
-      "name": {
-        "@language": "en",
-        "@value": "Ancona"
-      },
-      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/AnkonPanorama.jpg"
-    },
-    {
-      "@type": "City",
-      "@id": "http://dbpedia.org/resource/Andria",
-      "name": {
-        "@language": "en",
-        "@value": "Andria"
-      },
-      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/Castel_del_Monte_Mai08.jpg"
+      "@id": "http://dbpedia.org/resource/Bologna",
+      "name":  "Bologna",
+      "image": "http://commons.wikimedia.org/wiki/Special:FilePath/Bologna_postcard.jpg"
     }
   ]
 }

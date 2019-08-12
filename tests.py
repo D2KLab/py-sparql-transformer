@@ -75,6 +75,15 @@ class TestStringMethods(unittest.TestCase):
 
         self.assertEqual(dumps(out), dumps(expected))
 
+    @patch.object(SPARQLTransformer.SPARQLWrapper, 'query', mock('city.list.ld.json'))
+    def test_anchor(self):
+        q, expected = load('city.list.ld.json')
+        out = sparqlTransformer(q, opt)
+        # with open('a.json', 'w') as o:
+        #     json.dump(out, o)
+
+        self.assertEqual(dumps(out), dumps(expected))
+
 
 if __name__ == '__main__':
     unittest.main()

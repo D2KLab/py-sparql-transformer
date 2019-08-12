@@ -1,18 +1,15 @@
 {
   "@context": "http://schema.org/",
-  "@graph": [
-    {
-      "@type": "City",
-      "@id": "?id",
-      "name": "$rdfs:label$required$bestlang",
-      "image": "$foaf:depiction$required"
-    }
-  ],
+  "@graph": [{
+    "@type": "City",
+    "@id" : "?id",
+    "name": "$rdfs:label$required$lang:it",
+    "image": "$foaf:depiction$required"
+  }],
   "$where": [
     "?id a dbo:City",
     "?id dbo:country dbr:Italy"
   ],
-  "$lang": "en;q=1, it;q=0.7 *;q=0.1",
-  "$orderby": "?id",
-  "$limit": 10
+  "$langTag": "hide",
+  "$limit": 1
 }

@@ -476,7 +476,9 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
             lang_filter = ".\nFILTER(lang(%s) = '%s')" % (id, _lang.split(':')[1])
 
         if is_dollar:
-            subject = prev_root if ('prevRoot' in options and prev_root is not None) else _rootId
+            use_prev_root = (id == _rootId) or ('prevRoot' in options and prev_root is not None)
+
+            subject = prev_root if use_prev_root else _rootId
             q = ' '.join([subject, v, id])
             q += lang_filter
             wheres.append(q if required else 'OPTIONAL { %s }' % q)

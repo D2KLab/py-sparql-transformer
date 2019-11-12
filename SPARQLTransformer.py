@@ -163,7 +163,7 @@ def _jsonld2query(_input):
         %s
         %s
         %s
-    """ % (distinct, ' '.join(_vars), _from, ('\n' + INDENT).join(values), ('\n' + INDENT).join(wheres),
+    """ % (distinct, ' '.join(_vars), _from, ('\n' + INDENT).join(values), ('.\n' + INDENT).join(wheres),
            ('\n' + INDENT).join(filterz),
            groupby, having, orderby, limit, offset)
 

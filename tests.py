@@ -21,7 +21,7 @@ def mock(filename):
 
     def f(self):
         class x:
-            def convert(self):
+            def convert():
                 return obj
         return x
 

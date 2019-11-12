@@ -9,5 +9,6 @@
     "?id dbo:country dbr:Italy"
   ],
   "$orderby": "?id",
+  "$from": "http://dbpedia.org",
   "$limit": 100
 }

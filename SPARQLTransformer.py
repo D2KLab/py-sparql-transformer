@@ -1,10 +1,13 @@
 import logging
 import pprint
 import os
+import re
 import json
 import copy
 from SPARQLWrapper import SPARQLWrapper, JSON
 from simplejson import dumps
+
+INDENT = '          '
 
 DEFAULT_OPTIONS = {
     'context': 'http://schema.org/',
@@ -136,6 +139,7 @@ def _jsonld2query(_input):
     wheres = [w.strip() for w in wheres]
     wheres = [w for w in wheres if w]
 
+    _from = ('FROM <%s>' % modifiers['$from']) if '$from' in modifiers else ''
     limit = ('LIMIT %d' % modifiers['$limit']) if '$limit' in modifiers else ''
     offset = 'OFFSET ' + modifiers['$offset'] if '$offset' in modifiers else ''
     distinct = '' if ('$distinct' in modifiers and modifiers['$distinct'] == 'false') else 'DISTINCT'
@@ -147,19 +151,24 @@ def _jsonld2query(_input):
 
     filterz = list(map(lambda f: 'FILTER(%s)' % f, filters))
     query = '\n'.join(prefixes) + """
-        SELECT %s %s WHERE {
+        SELECT %s %s
+        %s
+        WHERE {
           %s
           %s
           %s
         }
-          %s
-          %s
-          %s
-          %s
-          %s
-    """ % (distinct, ' '.join(_vars), '\n'.join(values), '.\n'.join(wheres), '\n'.join(filterz),
+        %s
+        %s
+        %s
+        %s
+        %s
+    """ % (distinct, ' '.join(_vars), _from, ('\n' + INDENT).join(values), ('\n' + INDENT).join(wheres),
+           ('\n' + INDENT).join(filterz),
            groupby, having, orderby, limit, offset)
 
+    query = re.sub(r"\n+", "\n", query)
+    query = re.sub(r"\n\s+\n", "\n", query)
     logger.info(query)
     return proto, query
 
@@ -473,7 +482,7 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
         _lang = [s for s in options if s.startswith('lang:')]
         if len(_lang) > 0:
             _lang = _lang[0]
-            lang_filter = ".\nFILTER(lang(%s) = '%s')" % (id, _lang.split(':')[1])
+            lang_filter = ".\n%sFILTER(lang(%s) = '%s')" % (INDENT, id, _lang.split(':')[1])
 
         if is_dollar:
             use_prev_root = (id == _rootId) or ('prevRoot' in options and prev_root is not None)
@@ -481,7 +490,7 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
             subject = prev_root if use_prev_root else _rootId
             q = ' '.join([subject, v, id])
             q += lang_filter
-            wheres.append(q if required else 'OPTIONAL { %s }' % q)
+            wheres.append(q if required else '%sOPTIONAL { %s }' % (INDENT, q))
 
     return inner, _blockRequired
 

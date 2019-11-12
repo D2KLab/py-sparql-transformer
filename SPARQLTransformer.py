@@ -81,7 +81,7 @@ def post_process(sparql_res, proto, opt):
     instances = list(map(lambda b: _sparql2proto(b, proto, opt), bindings))
     # merge lines with the same id
     content = []
-    anchor = instances[0]['$anchor']
+    anchor = instances[0]['$anchor'] if len(instances) > 0 else 'id'
     for inst in instances:
         _id = inst[anchor]
         # search if we have already the same id
@@ -169,6 +169,7 @@ def _jsonld2query(_input):
 
     query = re.sub(r"\n+", "\n", query)
     query = re.sub(r"\n\s+\n", "\n", query)
+    query = re.sub(r"\.+", ".", query)
     logger.info(query)
     return proto, query
 

@@ -7,7 +7,7 @@
     "image": "$foaf:depiction$required"
   }],
   "$where": [
-    "?id a dbo:City",
+    "?id a dbo:City.",
     "?id dbo:country dbr:Italy"
   ],
   "$langTag": "hide",

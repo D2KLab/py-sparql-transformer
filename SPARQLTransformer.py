@@ -132,7 +132,8 @@ def _jsonld2query(_input):
     wheres = _as_array(modifiers.get('$where'))
     main_lang = modifiers.get('$lang')
 
-    mpk_fun, _temp = _manage_proto_key(proto, _vars, filters, wheres, main_lang, values=modifiers.get('$values', []))
+    values_key = [_sparql_var(v) for v in modifiers.get('$values', {}).keys()]
+    mpk_fun, _temp = _manage_proto_key(proto, _vars, filters, wheres, main_lang, values=values_key)
     for i, key in enumerate(list(proto)):
         mpk_fun(key, i)
 
@@ -193,6 +194,7 @@ def parse_values(values):
     res = []
     for p in list(values):
         __v = []
+
         for v in _as_array(values[p]):
             if v.startswith('http'):
                 __v.append('<%s>' % v)
@@ -446,15 +448,15 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
             options = v.split('$')
             v = options.pop(0)
 
-        required = 'required' in options or k in ['id', '@id'] or k in values
-        # if it is an id or I specified a value, this property can not be optional
-
         id = ('?' + prefix + str(i)) if is_dollar else v
         _var = [s for s in options if s.startswith('var:')]
         if len(_var) > 0:
             id = _sparql_var(_var[0].split(':')[1])
             if not id.startswith('?'):
                 id = '?' + id
+
+        required = 'required' in options or k in ['id', '@id'] or id in values
+        # if it is an id or I specified a value, this property can not be optional
 
         proto[k] = id
         _bestlang = [s for s in options if s.startswith('bestlang')]

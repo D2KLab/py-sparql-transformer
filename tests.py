@@ -21,6 +21,7 @@ def mock(filename):
 
     def f(self):
         class x:
+            @staticmethod
             def convert():
                 return obj
         return x
@@ -75,9 +76,9 @@ class TestStringMethods(unittest.TestCase):
 
         self.assertEqual(dumps(out), dumps(expected))
 
-    @patch.object(SPARQLTransformer.SPARQLWrapper, 'query', mock('city.list.ld.json'))
-    def test_anchor(self):
-        q, expected = load('city.list.ld.json')
+    @patch.object(SPARQLTransformer.SPARQLWrapper, 'query', mock('band_reversed.json'))
+    def test_reversed(self):
+        q, expected = load('band_reversed.json')
         out = sparqlTransformer(q, opt)
         # with open('a.json', 'w') as o:
         #     json.dump(out, o)

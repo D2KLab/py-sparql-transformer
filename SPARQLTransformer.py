@@ -487,11 +487,16 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
             _lang = _lang[0]
             lang_filter = ".\n%sFILTER(lang(%s) = '%s')" % (INDENT, id, _lang.split(':')[1])
 
+        reverse = 'reverse' in options
         if is_dollar:
             use_prev_root = (id == _rootId) or ('prevRoot' in options and prev_root is not None)
 
             subject = prev_root if use_prev_root else _rootId
-            q = ' '.join([subject, v, id])
+
+            subj = id if reverse else subject
+            obj = subject if reverse else id
+
+            q = ' '.join([subj, v, obj])
             q += lang_filter
             wheres.append(q if required else '%sOPTIONAL { %s }' % (INDENT, q))
 

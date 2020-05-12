@@ -134,8 +134,8 @@ def _jsonld2query(_input):
     wheres = _as_array(modifiers.get('$where'))
     main_lang = modifiers.get('$lang')
 
-    values_key = [_sparql_var(v) for v in modifiers.get('$values', {}).keys()]
-    mpk_fun, _temp = _manage_proto_key(proto, _vars, filters, wheres, main_lang, values=values_key)
+    values_normalized = normalize_values(modifiers.get('$values', None))
+    mpk_fun, _temp = _manage_proto_key(proto, _vars, filters, wheres, main_lang, values=values_normalized)
     for i, key in enumerate(list(proto)):
         mpk_fun(key, i)
 
@@ -147,7 +147,7 @@ def _jsonld2query(_input):
     offset = 'OFFSET ' + modifiers['$offset'] if '$offset' in modifiers else ''
     distinct = '' if ('$distinct' in modifiers and modifiers['$distinct'] == 'false') else 'DISTINCT'
     prefixes = _parse_prefixes(modifiers['$prefixes']) if '$prefixes' in modifiers else []
-    values = parse_values(modifiers['$values']) if '$values' in modifiers else []
+    values = parse_values(values_normalized) if '$values' in modifiers else []
     orderby = 'ORDER BY ' + ' '.join(_as_array(modifiers['$orderby'])) if '$orderby' in modifiers else ''
     groupby = 'GROUP BY ' + ' '.join(_as_array(modifiers['$groupby'])) if '$groupby' in modifiers else ''
     having = 'HAVING(%s)' % ' && '.join(_as_array(modifiers['$having'])) if '$having' in modifiers else ''
@@ -177,6 +177,19 @@ def _jsonld2query(_input):
     return proto, query
 
 
+def normalize_values(values):
+    """
+    Transform all key of a object to a sparqlVariable
+    adding the '?' if required
+    """
+    if values is None:
+        return {}
+    out = dict()
+    for key, value in values.items():
+        out[_sparql_var(key)] = value
+    return out
+
+
 def _default_sparql(endpoint):
     sparql = SPARQLWrapper(endpoint)
     sparql.setReturnFormat(JSON)
@@ -202,6 +215,9 @@ def parse_values(values):
                 __v.append('<%s>' % v)
             elif ':' in v:
                 __v.append(v)
+            elif re.match(r'^.+@[a-z]{2,3}(_[A-Z]{2})?$', v):
+                vv, langtag = v.split('@')
+                __v.append('"%s"@%s' % (vv, langtag))
             else:
                 __v.append('"%s"' % v)
         res.append('VALUES %s {%s}' % (_sparql_var(p), ' '.join(__v)))
@@ -415,7 +431,7 @@ def _sparql_var(_input):
     return _input if _input.startswith('?') else '?' + _input
 
 
-def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, prefix="v", prev_root=None, values=[]):
+def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, prefix="v", prev_root=None, values={}):
     """Parse a single key in prototype"""
     _rootId, _blockRequired = _compute_root_id(proto, prefix)
     _rootId = _rootId or prev_root or '?id'
@@ -487,8 +503,15 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
         _lang = [LANG_REGEX.match(s).group(1) for s in options if LANG_REGEX.match(s)]
 
         if len(_lang) > 0:
-            _lang = _lang[0] if _lang[0] is not None else re.split('[;,]', main_lang)[0]
-            lang_filter = ".\n%sFILTER(lang(%s) = '%s')" % (INDENT, id, _lang)
+            _lang = _lang[0]
+            if _lang is None and main_lang is not None:
+                _lang = re.split('[;,]', main_lang)[0]
+            if _lang:
+                _lang = _lang.strip()
+                if id in values and type(values[id]) == str:
+                    values[id] += '@' + _lang
+                else:
+                    lang_filter = ".\n%sFILTER(lang(%s) = '%s')" % (INDENT, id, _lang)
 
         reverse = 'reverse' in options
         if is_dollar:

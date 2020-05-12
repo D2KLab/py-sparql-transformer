@@ -28,6 +28,8 @@ KEY_VOCABULARIES = {
     }
 }
 
+LANG_REGEX = re.compile(r"^lang(?::(.+))?")
+
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.WARNING)
 logger = logging.getLogger('sparql_transformer')
 
@@ -482,10 +484,11 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
 
         # lang filters are managed here, so that they stay within the OPTIONAL
         lang_filter = ''
-        _lang = [s for s in options if s.startswith('lang:')]
+        _lang = [LANG_REGEX.match(s).group(1) for s in options if LANG_REGEX.match(s)]
+
         if len(_lang) > 0:
-            _lang = _lang[0]
-            lang_filter = ".\n%sFILTER(lang(%s) = '%s')" % (INDENT, id, _lang.split(':')[1])
+            _lang = _lang[0] if _lang[0] is not None else re.split('[;,]', main_lang)[0]
+            lang_filter = ".\n%sFILTER(lang(%s) = '%s')" % (INDENT, id, _lang)
 
         reverse = 'reverse' in options
         if is_dollar:

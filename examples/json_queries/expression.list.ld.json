@@ -1,0 +1,18 @@
+{
+  "@context": "http://schema.org/",
+  "@graph": [{
+    "@type": "MusicComposition",
+    "genre": "$mus:U12_has_genre/skos:prefLabel$lang:en",
+    "@id": "?id",
+    "name": "$mus:U70_has_title|ecrm:P102_has_title$required",
+    "composer": {
+      "@id": "?composer",
+      "name": "$foaf:name$required"
+    },
+    "dateCreated": "1763"
+  }],
+  "$where": [
+    "?expCreation efrbroo:R17_created ?id; ecrm:P9_consists_of / ecrm:P14_carried_out_by ?composer"
+  ],
+  "$limit": 10
+}

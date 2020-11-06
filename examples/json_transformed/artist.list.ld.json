@@ -1,0 +1,28 @@
+{
+  "@context": "http://schema.org/",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "http://data.doremus.org/artist/b2360e86-1c01-322d-a9a0-ffff6dfff68d",
+      "name": [
+        "Johann Christian Bach",
+        "John Christian Bach",
+        "Jean-Chrétien Bach"
+      ],
+      "image": "http://en.wikipedia.org/wiki/Special:FilePath/Johann_Christian_Bach_by_Thomas_Gainsborough.jpg",
+      "birthDate": [
+        "1735",
+        "1735-09-05"
+      ],
+      "deathDate": [
+        "1782",
+        "1782-01-01"
+      ],
+      "birthPlace": {
+        "@type": "Place",
+        "@id": "http://dbpedia.org/resource/Leipzig",
+        "name": "Leipzig"
+      }
+    }
+  ]
+}

@@ -34,7 +34,8 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.WARNING)
 logger = logging.getLogger('sparql_transformer')
 
 
-def pre_process(_input, options=None):
+def pre_process(json_query, options=None):
+    _input = json_query.copy()
     opt = DEFAULT_OPTIONS.copy()
     if '@context' in _input:
         opt['context'] = _input['@context']
@@ -496,7 +497,8 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
         if len(_langTag) > 0:
             proto[k] = proto[k] + '$' + _langTag[0]
 
-        vars.append(_var)
+        if _var not in vars:
+            vars.append(_var)
 
         # lang filters are managed here, so that they stay within the OPTIONAL
         lang_filter = ''

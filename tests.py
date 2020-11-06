@@ -61,8 +61,8 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(cleans(outSparql), cleans(rq))
 
         out = sparqlTransformer(q, opt)
-        with open('a.json', 'w') as o:
-            json.dump(out, o)
+        # with open('a.json', 'w') as o:
+        #     json.dump(out, o)
 
         self.assertEqual(dumps(out), dumps(expected))
 
@@ -117,6 +117,18 @@ class TestStringMethods(unittest.TestCase):
     @patch.object(SPARQLTransformer.SPARQLWrapper, 'query', mock('issue_10_duplicate_vars.json'))
     def test_reversed(self):
         q, expected, rq = load('issue_10_duplicate_vars.json')
+        outSparql = get_sparql_query(q)
+        self.assertEqual(cleans(outSparql), cleans(rq))
+
+        out = sparqlTransformer(q, opt)
+        # with open('a.json', 'w') as o:
+        #     json.dump(out, o)
+
+        self.assertEqual(dumps(out), dumps(expected))
+
+    @patch.object(SPARQLTransformer.SPARQLWrapper, 'query', mock('aggregates.json'))
+    def test_aggregates(self):
+        q, expected, rq = load('aggregates.json')
         outSparql = get_sparql_query(q)
         self.assertEqual(cleans(outSparql), cleans(rq))
 

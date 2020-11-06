@@ -29,6 +29,7 @@ KEY_VOCABULARIES = {
 }
 
 LANG_REGEX = re.compile(r"^lang(?::(.+))?")
+AGGREGATES = ['sample', 'count', 'sum', 'min', 'max', 'avg']
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.WARNING)
 logger = logging.getLogger('sparql_transformer')
@@ -84,15 +85,18 @@ def post_process(sparql_res, proto, opt):
     instances = list(map(lambda b: _sparql2proto(b, proto, opt), bindings))
     # merge lines with the same id
     content = []
-    anchor = instances[0]['$anchor'] if len(instances) > 0 else 'id'
-    for inst in instances:
-        _id = inst[anchor]
-        # search if we have already the same id
-        match = [x for x in content if x[anchor] == _id]
-        if not match:  # it is a new one
-            content.append(inst)
-        else:  # otherwise modify previous one
-            _merge_obj(match[0], inst)
+    anchor = instances[0]['$anchor'] if (len(instances) > 0 and '$anchor' in instances[0]) else None
+    if not anchor:
+        content = instances
+    else:
+        for inst in instances:
+            _id = inst[anchor]
+            # search if we have already the same id
+            match = [x for x in content if x[anchor] == _id]
+            if not match:  # it is a new one
+                content.append(inst)
+            else:  # otherwise modify previous one
+                _merge_obj(match[0], inst)
 
     # remove anchor tag
     for i in content:
@@ -108,7 +112,6 @@ def post_process(sparql_res, proto, opt):
 
 def sparqlTransformer(_input, options=None):
     query, proto, opt = pre_process(_input, options)
-
     sparql_fun = opt['sparqlFunction'] if 'sparqlFunction' in opt else _default_sparql(opt['endpoint'])
     sparql_res = sparql_fun(query)
 
@@ -467,23 +470,35 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
             options = v.split('$')
             v = options.pop(0)
 
-        id = ('?' + prefix + str(i)) if is_dollar else v
+        original_id = ('?' + prefix + str(i)) if is_dollar else v
+        id = original_id
+
         _var = [s for s in options if s.startswith('var:')]
         if len(_var) > 0:
             id = _sparql_var(_var[0].split(':')[1])
             if not id.startswith('?'):
                 id = '?' + id
 
-        required = 'required' in options or k in ['id', '@id'] or id in values
+        _bestlang = [s for s in options if s.startswith('bestlang')]
+        _langTag = [s for s in options if s.startswith('langTag')]
+
+        aggregate = [a for a in AGGREGATES if a in options]
+        aggr_what = id if is_dollar else original_id
+        if len(aggregate) > 0 and len(_var) == 0:
+            id = original_id if is_dollar else f"?{aggregate[0]}_{original_id.replace('?', '')}"
+
+        required = 'required' in options or k in ['id', '@id'] or id in values or (len(aggregate) > 0 and is_dollar)
         # if it is an id or I specified a value, this property can not be optional
 
         proto[k] = id
-        _bestlang = [s for s in options if s.startswith('bestlang')]
-        _langTag = [s for s in options if s.startswith('langTag')]
 
         _var = id
         if 'sample' in options:
             _var = '(SAMPLE(%s) AS %s)' % (id, id)
+
+        if len(aggregate) > 0:
+            distinct_txt = 'DISTINCT ' if 'distinct' in options else ''
+            _var = f"({aggregate[0].upper()}({distinct_txt}{aggr_what}) AS {id})"
 
         if len(_bestlang) > 0:
             _bestlang = _bestlang[0]

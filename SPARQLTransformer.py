@@ -262,6 +262,9 @@ def _fit_in(instance, line, options):
         variable = variable[1:]
         accept = None
         langTag = options['langTag']
+        asList = "$list" in variable
+        variable = variable.replace("$list", "")
+
         if "$accept:" in variable:
             temp = variable.split('$accept:')
             variable = temp[0]
@@ -278,6 +281,7 @@ def _fit_in(instance, line, options):
             opt = options.copy()
             opt['accept'] = accept
             opt['langTag'] = langTag
+            opt['list'] = asList
             instance[k] = _to_jsonld_value(line[variable], opt)
 
             if instance[k] is None:
@@ -339,7 +343,7 @@ def _to_jsonld_value(_input, options):
 
     # nothing more to do for other types
     if not isinstance(value, str):
-        return value
+        return [value] if options['list'] else value
 
     # if here, it is a string or a date, that are not parsed
     if 'xml:lang' in _input and options['langTag'] != 'hide':
@@ -351,7 +355,7 @@ def _to_jsonld_value(_input, options):
                 voc['lang']: lang,
                 voc['value']: value
             }
-    return value
+    return [value] if options['list'] else value
 
 
 def _merge_obj(base, addition):
@@ -371,6 +375,10 @@ def _merge_obj(base, addition):
         anchor = None
         if isinstance(a, dict) and '$anchor' in a:
             anchor = a['$anchor']
+
+        # if a is array, I take its value
+        if isinstance(a, list):
+            a = a[0]
 
         if isinstance(b, list):
             if anchor:
@@ -479,6 +487,7 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
             if not id.startswith('?'):
                 id = '?' + id
 
+        _accept = [s for s in options if s.startswith('accept')]
         _bestlang = [s for s in options if s.startswith('bestlang')]
         _langTag = [s for s in options if s.startswith('langTag')]
 
@@ -508,9 +517,14 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
                 raise AttributeError('bestlang require a language declared inline or in the root')
 
             _var = '(sql:BEST_LANGMATCH(%s, "%s", "en") AS %s)' % (id, lng, id)
+        elif len(_accept) > 0:
+            proto[k] = id + _accept[0]
 
         if len(_langTag) > 0:
             proto[k] = proto[k] + '$' + _langTag[0]
+
+        if 'list' in options:
+            proto[k] += '$list'
 
         if _var not in vars:
             vars.append(_var)

@@ -138,6 +138,18 @@ class TestStringMethods(unittest.TestCase):
 
         self.assertEqual(dumps(out), dumps(expected))
 
+    @patch.object(SPARQLTransformer.SPARQLWrapper, 'query', mock('band_forcelist.json'))
+    def test_forcelist(self):
+        q, expected, rq = load('band_forcelist.json')
+        outSparql = get_sparql_query(q)
+        self.assertEqual(cleans(outSparql), cleans(rq))
+
+        out = sparqlTransformer(q, opt)
+        # with open('a.json', 'w') as o:
+        #     json.dump(out, o)
+
+        self.assertEqual(dumps(out), dumps(expected))
+
 
 if __name__ == '__main__':
     unittest.main()

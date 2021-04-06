@@ -246,11 +246,14 @@ def _fit_in(instance, line, options):
 
         # if value is an obj
         if isinstance(variable, dict):
+            obj_as_list = variable.get('$list', False)
             fii_fun = _fit_in(variable, line, options)
             for key in list(variable):
                 fii_fun(key)
             if _is_empty_obj(variable):
                 instance.pop(k)
+            elif obj_as_list:
+                instance[k] = [instance[k]]
             return
 
         if not isinstance(variable, str):
@@ -435,6 +438,7 @@ def _compute_root_id(proto, prefix):
         proto[k] += '$var:' + _rootId
 
     proto['$anchor'] = k
+    proto['$list'] = '$list' in proto[k]
     return _rootId, required
 
 
@@ -449,7 +453,7 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
     _rootId = _rootId or prev_root or '?id'
 
     def inner(k, i=''):
-        if [k] == '$anchor':
+        if k == '$anchor' or k == '$list':
             return
         v = proto[k]
         if isinstance(v, dict):
@@ -518,12 +522,12 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
 
             _var = '(sql:BEST_LANGMATCH(%s, "%s", "en") AS %s)' % (id, lng, id)
         elif len(_accept) > 0:
-            proto[k] = id + _accept[0]
+            proto[k] = id + '$'+_accept[0]
 
         if len(_langTag) > 0:
             proto[k] = proto[k] + '$' + _langTag[0]
 
-        if 'list' in options:
+        if 'list' in options and id != _rootId:
             proto[k] += '$list'
 
         if _var not in vars:
@@ -580,6 +584,7 @@ def clean_recursively(instance):
 
     if isinstance(instance, dict):
         instance.pop('$anchor', None)  # remove $anchor
+        instance.pop('$list', None)  # remove $anchor
         for k, v in instance.items():
             clean_recursively(v)
 

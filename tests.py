@@ -150,6 +150,18 @@ class TestStringMethods(unittest.TestCase):
 
         self.assertEqual(dumps(out), dumps(expected))
 
+    @patch.object(SPARQLTransformer.SPARQLWrapper, 'query', mock('band.liblimit.json'))
+    def test_library_limit(self):
+        q, expected, rq = load('band.liblimit.json')
+        outSparql = get_sparql_query(q)
+        self.assertEqual(cleans(outSparql), cleans(rq))
+
+        out = sparqlTransformer(q, opt)
+        # with open('a.json', 'w') as o:
+        #     json.dump(out, o)
+
+        self.assertEqual(dumps(out), dumps(expected))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -74,6 +74,10 @@ def pre_process(json_query, options=None):
     opt['voc'] = voc
     opt['is_json_ld'] = is_json_ld
 
+    if '$limitMode' in json_query and '$limit' in json_query:
+        opt['limit'] = json_query['$limit']
+        opt['offset'] = json_query.get('$offset', 0)
+
     return query, proto, opt
 
 
@@ -101,6 +105,9 @@ def post_process(sparql_res, proto, opt):
     # remove anchor tag
     for i in content:
         clean_recursively(i)
+
+    if 'limit' in opt:
+        content = content[opt['offset']: opt['offset'] + opt['limit']]
 
     if is_json_ld:
         return {
@@ -147,8 +154,10 @@ def _jsonld2query(_input):
     wheres = [w for w in wheres if w]
 
     _from = ('FROM <%s>' % modifiers['$from']) if '$from' in modifiers else ''
-    limit = ('LIMIT %d' % modifiers['$limit']) if '$limit' in modifiers else ''
-    offset = 'OFFSET ' + modifiers['$offset'] if '$offset' in modifiers else ''
+    limit = ('LIMIT %d' % modifiers['$limit']) if (
+            '$limit' in modifiers and modifiers.get('$limitMode') != 'library') else ''
+    offset = 'OFFSET ' + modifiers['$offset'] if (
+            '$offset' in modifiers and modifiers.get('$limitMode') != 'library') else ''
     distinct = '' if ('$distinct' in modifiers and modifiers['$distinct'] == 'false') else 'DISTINCT'
     prefixes = _parse_prefixes(modifiers['$prefixes']) if '$prefixes' in modifiers else []
     values = parse_values(values_normalized) if '$values' in modifiers else []
@@ -522,7 +531,7 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
 
             _var = '(sql:BEST_LANGMATCH(%s, "%s", "en") AS %s)' % (id, lng, id)
         elif len(_accept) > 0:
-            proto[k] = id + '$'+_accept[0]
+            proto[k] = id + '$' + _accept[0]
 
         if len(_langTag) > 0:
             proto[k] = proto[k] + '$' + _langTag[0]

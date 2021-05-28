@@ -17,6 +17,9 @@ Write your SPARQL query directly in the JSON-LD you would like to have in output
 - [How to use](#how-to-use)
 - [Credits](#credits)
 
+## Query in JSON
+
+See the full documentation at [this link](https://github.com/D2KLab/sparql-transformer#query-in-json)
 
 ## How to use
 

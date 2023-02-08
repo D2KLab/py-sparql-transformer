@@ -156,7 +156,7 @@ def _jsonld2query(_input):
     _from = ('FROM <%s>' % modifiers['$from']) if '$from' in modifiers else ''
     limit = ('LIMIT %d' % modifiers['$limit']) if (
             '$limit' in modifiers and modifiers.get('$limitMode') != 'library') else ''
-    offset = 'OFFSET ' + modifiers['$offset'] if (
+    offset = 'OFFSET ' + str(modifiers['$offset']) if (
             '$offset' in modifiers and modifiers.get('$limitMode') != 'library') else ''
     distinct = '' if ('$distinct' in modifiers and modifiers['$distinct'] == 'false') else 'DISTINCT'
     prefixes = _parse_prefixes(modifiers['$prefixes']) if '$prefixes' in modifiers else []

@@ -19,7 +19,49 @@ Write your SPARQL query directly in the JSON-LD you would like to have in output
 
 ## Query in JSON
 
-See the full documentation at [this link](https://github.com/D2KLab/sparql-transformer#query-in-json)
+The core idea of this module is writing in a single file the query and the expected output in JSON.
+
+Two syntaxes are supported: plain JSON and JSON-LD.
+Here the examples in the 2 formats for the query of cities.
+
+- plain JSON
+
+```json
+{
+  "proto": [{
+    "id" : "?id",
+    "name": "$rdfs:label$required",
+    "image": "$foaf:depiction$required"
+  }],
+  "$where": [
+    "?id a dbo:City",
+    "?id dbo:country dbr:Italy"
+  ],
+  "$limit": 100
+}
+```
+
+- JSON-LD
+
+```json
+{
+  "@context": "http://schema.org/",
+  "@graph": [{
+    "@type": "City",
+    "@id" : "?id",
+    "name": "$rdfs:label$required",
+    "image": "$foaf:depiction$required"
+  }],
+  "$where": [
+    "?id a dbo:City",
+    "?id dbo:country dbr:Italy"
+  ],
+  "$limit": 100
+}
+```
+
+
+For the list of all properties and modifiers, read the **[full documentation](https://github.com/D2KLab/sparql-transformer#query-in-json)**.
 
 ## How to use
 

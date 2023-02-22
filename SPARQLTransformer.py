@@ -224,16 +224,19 @@ def parse_values(values):
         __v = []
 
         for v in _as_array(values[p]):
-            if v.startswith('http'):
-                __v.append('<%s>' % v)
-            elif ':' in v:
-                __v.append(v)
-            elif re.match(r'^.+@[a-z]{2,3}(_[A-Z]{2})?$', v):
-                vv, langtag = v.split('@')
-                __v.append('"%s"@%s' % (vv, langtag))
+            if type(v) == str:
+                if v.startswith('http'):
+                    __v.append(f'<{v}>')
+                elif ':' in v:
+                    __v.append(v)
+                elif re.match(r'^.+@[a-z]{2,3}(_[A-Z]{2})?$', v):
+                    vv, langtag = v.split('@')
+                    __v.append(f'"{vv}"@{langtag}')
+                else:
+                    __v.append(f'"{v}"')
             else:
-                __v.append('"%s"' % v)
-        res.append('VALUES %s {%s}' % (_sparql_var(p), ' '.join(__v)))
+                __v.append(v)
+        res.append('VALUES %s {%s}' % (_sparql_var(p), ' '.join(map(str, __v))))
     return res
 
 

@@ -1,7 +1,7 @@
 {
   "proto": {
     "band": "?id$anchor",
-    "label": "$rdfs:label$required$langTag:hide$list",
+    "label": "$rdfs:label$required$langTag:hide$asList",
     "genre": "$dbo:genre$var:?genre"
   },
   "$prefixes": {

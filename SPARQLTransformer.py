@@ -255,7 +255,7 @@ def _fit_in(instance, line, options):
 
         # if value is an obj
         if isinstance(variable, dict):
-            obj_as_list = variable.get('$list', False)
+            obj_as_list = variable.get('$list', variable.get('$asList', False))
             fii_fun = _fit_in(variable, line, options)
             for key in list(variable):
                 fii_fun(key)
@@ -274,8 +274,8 @@ def _fit_in(instance, line, options):
         variable = variable[1:]
         accept = None
         langTag = options['langTag']
-        asList = "$list" in variable
-        variable = variable.replace("$list", "")
+        asList = '$list' in variable or '$asList' in variable
+        variable = re.sub(r'\$(asL|l)ist', '', variable)
 
         if "$accept:" in variable:
             temp = variable.split('$accept:')
@@ -447,7 +447,7 @@ def _compute_root_id(proto, prefix):
         proto[k] += '$var:' + _rootId
 
     proto['$anchor'] = k
-    proto['$list'] = '$list' in proto[k]
+    proto['$list'] = '$list' in proto[k] or '$asList' in proto[k]
     return _rootId, required
 
 
@@ -462,7 +462,7 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
     _rootId = _rootId or prev_root or '?id'
 
     def inner(k, i=''):
-        if k == '$anchor' or k == '$list':
+        if k in ['$anchor', '$list', '$asList']:
             return
         v = proto[k]
         if isinstance(v, dict):
@@ -536,7 +536,7 @@ def _manage_proto_key(proto, vars=[], filters=[], wheres=[], main_lang=None, pre
         if len(_langTag) > 0:
             proto[k] = proto[k] + '$' + _langTag[0]
 
-        if 'list' in options and id != _rootId:
+        if ('list' in options or 'asList' in options) and id != _rootId:
             proto[k] += '$list'
 
         if _var not in vars:
@@ -594,6 +594,7 @@ def clean_recursively(instance):
     if isinstance(instance, dict):
         instance.pop('$anchor', None)  # remove $anchor
         instance.pop('$list', None)  # remove $anchor
+        instance.pop('$asList', None)  # remove $anchor
         for k, v in instance.items():
             clean_recursively(v)
 

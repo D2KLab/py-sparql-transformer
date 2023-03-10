@@ -268,6 +268,12 @@ def _fit_in(instance, line, options):
                 instance[k] = [instance[k]]
             return
 
+        if isinstance(variable, list):
+            fii_fun = _fit_in(variable, line, options)
+            for i in range(len(variable)):
+                fii_fun(i)
+            return
+
         if not isinstance(variable, str):
             return
 

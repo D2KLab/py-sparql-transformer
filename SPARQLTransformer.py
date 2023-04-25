@@ -297,7 +297,7 @@ def _fit_in(instance, line, options):
 
         # variable not in result, delete from
         if variable not in line:
-            instance.pop(k)
+            instance[k] = None
         else:
             opt = options.copy()
             opt['accept'] = accept

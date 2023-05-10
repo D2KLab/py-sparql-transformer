@@ -268,6 +268,14 @@ def _fit_in(instance, line, options):
                 instance[k] = [instance[k]]
             return
 
+        if isinstance(variable, list):
+            fii_fun = _fit_in(variable, line, options)
+            for i in range(len(variable)):
+                fii_fun(i)
+            if all(item is None for item in variable):
+                instance.pop(k)
+            return
+
         if not isinstance(variable, str):
             return
 
@@ -291,7 +299,10 @@ def _fit_in(instance, line, options):
 
         # variable not in result, delete from
         if variable not in line:
-            instance.pop(k)
+            if isinstance(instance, list):
+                instance[k] = None
+            else:
+                instance.pop(k)
         else:
             opt = options.copy()
             opt['accept'] = accept

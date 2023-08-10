@@ -36,6 +36,11 @@ logger = logging.getLogger('sparql_transformer')
 
 
 def pre_process(json_query, options=None):
+    '''Extracts the SPARQL query, target prototype and parsing options from a query provided in JSON format (`json_query`).
+
+    If the query is a JSON-LD query, the target prototype is contained in the `@graph` element. For non-JSON-LD queries, the JSON structure should 
+    include a `proto` element with the transformation prototype.
+    '''
     _input = json_query.copy()
     opt = DEFAULT_OPTIONS.copy()
     if '@context' in _input:

@@ -111,7 +111,7 @@ If you use this module for your research work, please cite:
 
 
 <!--
-python setup.py sdist
-twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-twine upload dist/*
+python setup.py sdist bdist_wheel
+twine upload --repository SPARQLTransformer-TEST dist/*
+twine upload --repository SPARQLTransformer dist/*
 -->

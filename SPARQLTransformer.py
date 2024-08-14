@@ -653,3 +653,10 @@ def _as_array(v):
 
 def _deepequals(a, b):
     return a == b or dumps(a) == dumps(b)
+
+
+def validJSON(json_file):
+    """Validate json file (loaded into Python as a dict) is a valid query for
+    SPARQLTransformer (see https://github.com/D2KLab/py-sparql-transformer/issues/13).
+    """
+    return ("@graph" in json_file) or ("proto" in json_file)
